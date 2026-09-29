@@ -1,6 +1,6 @@
 # Suomen Kolibri
 
-WordPress child theme for Suomen Kolibri, based on Eeco Theme Child. The parent theme `eeco-theme` must be installed.
+WordPress child theme for Suomen Kolibri, made by [Tapio Kauranen](https://tapiokauranen.com). The parent theme `eeco-theme` must be installed.
 
 ## How updates reach the site
 

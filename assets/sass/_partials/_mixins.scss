@@ -1,0 +1,20 @@
+@mixin border($size) {
+	-webkit-border: $size;
+	-moz-border: $size;
+	-ms-border: $size;
+	border: $size;
+}
+@mixin pseudo($display: block, $content: ' '){
+    content: $content;
+    display: $display;
+}
+@mixin margin-1-rem-auto($margin: 1rem auto) {
+	margin: 1rem auto;
+}
+@mixin border-radius($radius) {
+	border-radius: $radius;
+	-webkit-border-radius: $radius;
+	-moz-border-radius: $radius;
+	-ms-border-radius: $radius;
+}
+

@@ -1,0 +1,32 @@
+# Publishes a GitHub release when the Version in style.css changes on main.
+# The site's updater (inc/theme-updater.php) picks up the newest release.
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths: [style.css]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read theme version
+        id: version
+        run: echo "version=$(grep -m1 -oP '^Version:\s*\K\S+' style.css)" >> "$GITHUB_OUTPUT"
+
+      - name: Create release if the version is new
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: v${{ steps.version.outputs.version }}
+        run: |
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            echo "$TAG already released"
+          else
+            gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --generate-notes
+          fi

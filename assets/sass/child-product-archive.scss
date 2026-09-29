@@ -1,0 +1,147 @@
+@import '_partials/variables';
+@import '_partials/breakpoints';
+@import '_partials/mixins';
+@import '_partials/typography';
+
+.category-description {
+	h2 {
+		margin-top: 1rem;
+	}
+}
+
+.product-categories {
+	a {
+		text-decoration: none;
+		&:hover {
+			color: $primary;
+			font-weight: 700;
+		}
+	}
+
+	.children {
+		padding-left: 2.5rem;
+	}
+}
+
+.woocommerce-products-header__title {
+	display: none;
+}
+
+.product.holder {
+	&:hover {
+		box-shadow: 0px 0px 15px 0px rgba(40,40,45,0.45);
+		-webkit-box-shadow: 0px 0px 15px 0px rgba(40,40,45,0.45);
+		-moz-box-shadow: 0px 0px 15px 0px rgba(40,40,45,0.45);
+	}
+	&>.woocommerce-LoopProduct-link {
+		display: flex;
+		flex-direction: column;
+		text-align: center;
+	}
+	&.borders {
+		&>.woocommerce-LoopProduct-link>.price {
+			margin-top: auto;
+		}
+	}
+
+	.woocommerce-price-suffix {
+		display: none;
+	}
+}
+
+.wc-filters {
+	@include media-breakpoint-up(lg) {
+		margin-top: 1.75rem;
+    	margin-bottom: 0.75rem;
+	}
+	.wcpf-filter {
+		.wcpf-front-element {
+			@include media-breakpoint-up(lg) {
+				min-width: 100px;
+			}
+			.wcpf-field-title {
+				@include media-breakpoint-up(lg) {
+					text-align: center;
+				}
+			}
+		}
+	}
+	.wcpf-inner.active {
+		.wcpf-checkbox {
+			background-color: $primary;
+			border: solid 1px $primary;
+		}
+	}
+	.wcpf-field-button {
+		@include media-breakpoint-up(lg) {
+			margin-left: auto;
+		}
+		.wcpf-button-action-reset {
+			@include media-breakpoint-up (lg) {
+				border: none;
+				text-decoration: underline;
+				padding: 0;
+				display: flex;
+				align-items: end;
+			}
+			&:hover {
+				background-color: $white;
+				color: $black;
+			}
+		}
+	}
+}
+
+//Price slider
+.wcpf-field-price-slider {
+	width: 100%;
+	display: flex;
+	.text {
+	  font-size: 1rem;
+	}
+	 .wcpf-inner {
+	   @include media-breakpoint-up(lg) {
+		 max-width: 60%;
+	   }
+	   .wcpf-input {
+		 border: 1px solid $tertiary;
+	   }
+	 }
+	 .ui-slider {
+	  .ui-slider-handle {
+		background-color: $primary;
+		height: 1.5rem;
+		width: 1.5rem;
+	  }
+	  .ui-slider-handle:nth-child(2) {
+		@include media-breakpoint-down(sm) {
+		  left: 100%;
+		}
+	  }
+	 }
+	.ui-slider-horizontal {
+	  .ui-slider-range {
+	   top: 40%;
+	  }
+	}
+	.priceLabel {
+	  font-size: 1rem;
+	}
+  }
+
+p.woocommerce-loop-product__title {
+	margin-bottom: .25rem;
+}
+
+.bgh-list-view {
+	.product.holder> {
+		.woocommerce-loop-product__link {
+				flex-direction: row;
+				align-items: center;
+				.price {
+					margin-top: unset;
+				}
+			
+		}
+	}
+} 

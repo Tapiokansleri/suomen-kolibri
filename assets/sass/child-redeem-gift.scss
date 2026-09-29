@@ -1,0 +1,47 @@
+@import '_partials/variables';
+@import '_partials/breakpoints';
+@import '_partials/mixins';
+@import '_partials/typography';
+
+.redeem-gift {
+	.row {
+		@include media-breakpoint-down(md) {
+			flex-direction: column;
+		}
+	}
+
+	img {
+		width: 100%;
+	}
+}
+.wrapper {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	margin-top: 1rem;
+	@include media-breakpoint-up(md) {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 100%;
+		width: 100%;
+		color: $white;
+		margin-top: 0;
+	}
+	.coupon {
+		display: flex;
+    	width: 100%;
+    	align-items: center;
+    	flex-wrap: wrap;
+		input {
+			flex: 0 0 66.66%;
+    		height: 42px;
+    		border-top: solid 1px;
+			border-left: solid 1px;
+			border-bottom: solid 1px;
+			border-right: 0;
+			padding: 0 .5rem;
+		}
+	}
+}

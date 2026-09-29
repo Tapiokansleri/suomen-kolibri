@@ -1,0 +1,155 @@
+.benefit-bar  {
+    .benefit {
+        a {
+            color: $white;
+        }
+        p, i {
+            font-size: 1rem;
+        }
+    }
+    .text-center {
+        p {
+            width: 100%;
+            display: flex;
+            justify-content: space-evenly;        }
+    }
+	.fa-phone {
+		transform: rotate(90deg);
+	}
+}
+
+.my-account {
+    display: none;
+}
+
+.menu-3 {
+    .nav-main-menu {
+        max-width: unset;
+    }
+} 
+
+.search-button {
+    &:before {
+        font-weight: 400;
+        height: 20px;
+        width: auto;
+        margin-bottom: 0.25rem;
+    }
+}
+
+.open-minicart, .redirect-to-cart {
+    .fas {
+        font-weight: 400;
+        height: 20px;
+        width: auto;
+        margin-bottom: 0.25rem;
+    }
+}  
+.main-menu {
+    .header-cart-count {
+        height: 22px;
+        width: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 1px;
+        font-size: 0.75rem;
+        @include media-breakpoint-up(lg) {  
+            right: 0.5rem;
+        }
+    }
+	a {
+		font-size: 1.15rem;
+	}
+	.dropdown-item.active, .dropdown-item:active {
+		background-color: $white;
+		color: $secondary;
+	}
+}
+
+//Side menu
+.sidebar-menu {
+    .sidebar-body {
+        li {
+            a {
+                color: $primary;
+                &:hover {
+                    font-weight: 700;
+                }
+            }
+        }
+        .open-submenu {
+            color: $primary;
+        }
+        .open {
+            li {
+                a {
+                    strong { 
+                        margin-bottom: 1rem;
+						font-size: 1.15rem;
+                    }
+                }
+                
+            }
+        }
+        .highlight {
+            .open-submenu {
+                color: $white;
+            }
+            a {
+                color: $white;
+            }
+            .open {
+                a {
+                    color: $primary;
+                }
+            }
+        }
+    }
+}
+
+.dropdown {
+   .dropdown-menu {
+		min-width: 370px;
+       a {
+           &:hover {
+               font-weight: 700;
+               background-color: $white;
+           }
+       }
+   } 
+}
+
+
+//Live search
+.search-container {
+    .search-column-products {
+        .add-to-cart-wrapper {
+            display: none;
+        }
+    }
+}
+
+//Mobile menu
+.mobile-menu {
+    li {
+        ul {
+            &.active {
+                overflow: auto;
+            }
+        }
+    }
+}
+
+.searchform--input {
+	border: solid 1px $tertiary;
+}
+
+.relevanssi-live-search-results-showing {
+	.search-column-posts{
+		background-color: $tertiary;
+	}
+	.search-head p {
+		font-weight: 700;
+	}
+}

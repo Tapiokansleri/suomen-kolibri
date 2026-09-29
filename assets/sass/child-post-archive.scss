@@ -1,0 +1,13 @@
+@import '_partials/variables';
+@import '_partials/breakpoints';
+@import '_partials/mixins';
+@import '_partials/typography';
+
+.entry-title {
+	a {
+		text-decoration: none;
+		&:hover {
+			color: $primary;
+		}
+	}
+}

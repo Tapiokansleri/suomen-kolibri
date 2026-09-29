@@ -1,0 +1,7 @@
+# Keep source-only files out of the release zip that WordPress installs.
+/.github export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/assets/sass export-ignore
+/package.json export-ignore
+/README.md export-ignore

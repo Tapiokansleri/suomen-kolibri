@@ -1,0 +1,99 @@
+@import '_partials/variables';
+@import '_partials/breakpoints';
+@import '_partials/mixins';
+@import '_partials/typography';
+@import "bootstrap/_bootstrap";
+
+.slider {
+    .layer {
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        position: absolute;
+        &.dark {
+            background-color: rgba(0, 0, 0, .5);
+        }
+        &.light {
+            background-color: rgba(255, 255, 255, .5);
+        }
+    }
+    div[class*="container"] { 
+		.layer { 
+			width: calc(100% - 30px);
+			right: 0;
+			margin: 0 auto;
+		}
+    }
+    img {
+        display: block;
+    }
+    .content {
+        padding: 1.5rem;
+        @include media-breakpoint-down(sm) {
+            padding: 1rem;
+        }
+        display: inline-block;
+    }
+    .carousel-control-prev, .carousel-control-next {
+        width: 5%;
+    }
+    .eeco-child-slider {
+        .content-box {
+            text-align: center;
+        }
+        h1 {
+        }
+        .slider-button-wrapper {
+            margin-top: 2rem;
+            @include media-breakpoint-down(sm) {
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+            }
+            .button-2 {
+                margin-left: 0.5rem;
+                @include media-breakpoint-down(sm) {
+                    margin-top: 1.5rem;
+                    margin-left: 0rem;
+                }
+            }
+            .button {
+                @include media-breakpoint-down(sm) {
+                    width: fit-content;
+                    margin: auto;
+                }
+            }
+        }
+    }
+}
+.carousel-item {
+    position: relative; 
+    .container {
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        top: 50%;
+        transform: translateY(-50%);
+        @include media-breakpoint-down(sm) {
+            top: 20%;
+            transform: translateY(-20%);
+}
+    }
+}
+
+.carousel-indicators li {
+    height: 15px;
+    width: 15px;
+    @include border-radius(50%);
+    opacity: 1;
+    border: 1px solid $white;
+    background-color: transparent;
+    margin-right: 0.5rem;
+    &.active {
+        background-color: $white;
+    }
+
+
+}

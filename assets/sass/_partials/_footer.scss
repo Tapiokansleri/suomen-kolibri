@@ -1,0 +1,87 @@
+footer {
+    h3.footer {
+        @include media-breakpoint-up(md) {
+            margin-bottom: 1.5rem;
+        }
+        @include media-breakpoint-down(sm) {
+            border-color: $secondary;
+        }
+    }
+    a {
+        &:hover {
+            font-weight: 700;
+            text-decoration: none;
+        }
+    
+    }
+    .some-widget {
+        a {
+            i {
+                background-color: transparent;
+                color: $black;
+                width: unset;
+                height: unset;
+                margin-right: 0.75rem;
+                &:before {
+                    width: unset;
+                    height: unset;
+                }
+            }
+        }
+        
+    }
+    .gform_wrapper{
+        .gfield_checkbox {
+            input {
+                line-height: 0.75rem;
+                &:after {
+                    width: 15px !important;
+                    height: 15px !important;
+                }
+            }
+            label {
+                font-size: 0.7rem;
+            }
+            
+
+        }
+        legend {
+            font-weight: 400 !important;
+            font-size: 1rem !important;
+        }
+        .gform_footer {
+            display: flex;
+            .gform_button {
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 0;
+
+            } 
+
+        }
+    }
+}
+
+#footer-bottom {
+   .container {
+       @include media-breakpoint-up (md) {
+        border-top: 1px solid $secondary;
+       }
+   }
+    .footer-content {
+        > div {
+            display: flex;
+            justify-content: center;
+            p {
+                text-align: center;
+            }
+            img {
+                margin: 0 1.5rem;
+                @include media-breakpoint-down(sm) {
+                    width: 25%;
+                    margin: 0 0.5rem;
+                }
+            }
+        }
+    }
+}

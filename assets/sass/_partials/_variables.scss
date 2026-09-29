@@ -1,0 +1,24 @@
+// VARIABLES
+$black: #000000;
+$white: #ffffff;
+$primary: #23A2BE;
+$secondary: #28282D;
+$tertiary: #E9E2DC;
+$quaternary: #EDEEEE;
+$quinary: #919191;
+
+// Grid breakpoints
+//
+// Define the minimum dimensions at which your layout will change,
+// adapting to different screen sizes, for use in media queries.
+
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px
+) !default;
+
+// IE MEDIA QUERY
+$microsoft: "all and (-ms-high-contrast: none), (-ms-high-contrast: active)";

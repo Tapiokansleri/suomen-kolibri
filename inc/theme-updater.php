@@ -15,8 +15,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once get_stylesheet_directory() . '/lib/plugin-update-checker/plugin-update-checker.php';
 
-YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
+$suomen_kolibri_updater = YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
 	'https://github.com/Tapiokansleri/suomen-kolibri/',
 	get_stylesheet_directory() . '/functions.php',
 	'suomen-kolibri'
 );
+
+// Install the suomen-kolibri.zip attached to each release (see .github/workflows/release.yml).
+$suomen_kolibri_updater->getVcsApi()->enableReleaseAssets( '/suomen-kolibri\.zip($|[?&#])/i' );

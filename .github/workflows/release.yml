@@ -28,5 +28,7 @@ jobs:
           if gh release view "$TAG" > /dev/null 2>&1; then
             echo "$TAG already released"
           else
-            gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --generate-notes
+            # Zip with a suomen-kolibri/ folder so WordPress installs it under the right name.
+            git archive --format=zip --prefix=suomen-kolibri/ -o suomen-kolibri.zip HEAD
+            gh release create "$TAG" suomen-kolibri.zip --target "$GITHUB_SHA" --title "$TAG" --generate-notes
           fi

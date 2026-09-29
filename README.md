@@ -25,7 +25,7 @@ npm run build-css
 
 ## First install on the site
 
-1. Upload the theme zip under **Appearance → Themes → Add New Theme → Upload Theme**.
+1. Download `suomen-kolibri.zip` from the latest release and upload it under **Appearance → Themes → Add New Theme → Upload Theme**.
 2. Activate it. Menu locations and Customizer settings are copied from Eeco Theme Child once (`inc/migrate-theme-mods.php`).
 3. Turn on **Enable auto-updates** for the theme.
 4. Paste the Google Maps API key under **Settings → General → Google Maps API key**. It is kept out of this public repository; until it is set, the pick-up point map on the order page is hidden.

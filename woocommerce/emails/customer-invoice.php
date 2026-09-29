@@ -2,26 +2,65 @@
 /**
  * Customer invoice email
  *
- * @package WooCommerce/Templates/Emails
- * @version 3.7.0
+ * This template can be overridden by copying it to yourtheme/woocommerce/emails/customer-invoice.php.
+ *
+ * HOWEVER, on occasion WooCommerce will need to update template files and you
+ * (the theme developer) will need to copy the new files to your theme to
+ * maintain compatibility. We try to do this as little as possible, but it does
+ * happen. When this occurs the version of the template file will be bumped and
+ * the readme will list any important changes.
+ *
+ * @see https://woocommerce.com/document/template-structure/
+ * @package WooCommerce\Templates\Emails
+ * @version 10.4.0
  */
+
+use Automattic\WooCommerce\Enums\OrderStatus;
+use Automattic\WooCommerce\Utilities\FeaturesUtil;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+$email_improvements_enabled = FeaturesUtil::feature_is_enabled( 'email_improvements' );
+
+/**
+ * Executes the e-mail header.
+ *
+ * @hooked WC_Emails::email_header() Output the email header
+ */
 do_action( 'woocommerce_email_header', $email_heading, $email );
 
 $order_date = $order->get_date_created();
 ?>
 
-<?php if ( $order->has_status( 'pending' ) ) : ?>
-
-	<p><?php printf( __( 'An order has been created for you on %s. To pay for this order please use the following link: %s', 'woocommerce' ), esc_html( get_bloginfo( 'name' ) ), '<a href="' . esc_url( $order->get_checkout_payment_url() ) . '">' . esc_html__( 'pay', 'woocommerce' ) . '</a>' ); ?></p>
-
+<?php if ( $order->needs_payment() ) : ?>
+	<?php echo $email_improvements_enabled ? '<div class="email-introduction">' : ''; ?>
+	<p>
+	<?php
+	if ( $order->has_status( OrderStatus::FAILED ) ) {
+		printf(
+			wp_kses(
+			/* translators: %1$s Site title, %2$s Order pay link */
+				__( 'Sorry, your order on %1$s was unsuccessful. Your order details are below, with a link to try your payment again: %2$s', 'woocommerce' ),
+				array(
+					'a' => array(
+						'href' => array(),
+					),
+				)
+			),
+			esc_html( get_bloginfo( 'name', 'display' ) ),
+			'<a href="' . esc_url( $order->get_checkout_payment_url() ) . '">' . esc_html__( 'Pay for this order', 'woocommerce' ) . '</a>'
+		);
+	} else {
+		printf( __( 'An order has been created for you on %s. To pay for this order please use the following link: %s', 'woocommerce' ), esc_html( get_bloginfo( 'name' ) ), '<a href="' . esc_url( $order->get_checkout_payment_url() ) . '">' . esc_html__( 'pay', 'woocommerce' ) . '</a>' );
+	}
+	?>
+	</p>
+	<?php echo $email_improvements_enabled ? '</div>' : ''; ?>
 <?php endif; ?>
 
-<?php do_action( 'woocommerce_email_before_order_table', $order, $sent_to_admin, $plain_text ); ?>
+<?php do_action( 'woocommerce_email_before_order_table', $order, $sent_to_admin, $plain_text, $email ); ?>
 
 <h2 style="font-size: 14px;"><?php echo esc_html__( 'Order:', 'woocommerce' ) . ' ' . esc_html( $order->get_order_number() ); ?><?php if ( $order_date ) : ?> (<?php
 	$timestamp = $order_date->getTimestamp();
@@ -60,8 +99,19 @@ $order_date = $order->get_date_created();
 	</tfoot>
 </table>
 
-<?php do_action( 'woocommerce_email_after_order_table', $order, $sent_to_admin, $plain_text ); ?>
+<?php do_action( 'woocommerce_email_after_order_table', $order, $sent_to_admin, $plain_text, $email ); ?>
 
-<?php do_action( 'woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text ); ?>
+<?php
+/**
+ * Hook for the woocommerce_email_order_meta.
+ *
+ * @hooked WC_Emails::order_meta() Shows order meta data.
+ */
+do_action( 'woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email );
 
-<?php do_action( 'woocommerce_email_footer' ); ?>
+/**
+ * Executes the email footer.
+ *
+ * @hooked WC_Emails::email_footer() Output the email footer
+ */
+do_action( 'woocommerce_email_footer', $email );

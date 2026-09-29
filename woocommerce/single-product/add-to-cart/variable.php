@@ -10,9 +10,9 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @see https://docs.woocommerce.com/document/template-structure/
- * @package WooCommerce/Templates
- * @version 3.5.5
+ * @see https://woocommerce.com/document/template-structure/
+ * @package WooCommerce\Templates
+ * @version 9.6.0
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -26,11 +26,11 @@ $layout 		 = get_option('eeco_product_page_variable');
 
 do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 
-<form class="variations_form cart" action="<?php echo esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ); ?>" method="post" enctype='multipart/form-data' data-product_id="<?php echo absint( $product->get_id() ); ?>" data-product_variations="<?php echo htmlspecialchars( wp_json_encode( $available_variations ) ); // WPCS: XSS ok. ?>">
+<form class="variations_form cart" action="<?php echo esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ); ?>" method="post" enctype='multipart/form-data' data-product_id="<?php echo absint( $product->get_id() ); ?>" data-product_variations="<?php echo $variations_attr; // WPCS: XSS ok. ?>">
 	<?php do_action( 'woocommerce_before_variations_form' ); ?>
 
 	<?php if ( empty( $available_variations ) && false !== $available_variations ) : ?>
-		<p class="stock out-of-stock"><?php esc_html_e( 'This product is currently out of stock and unavailable.', 'bgh-theme' ); ?></p>
+		<p class="stock out-of-stock"><?php echo esc_html( apply_filters( 'woocommerce_out_of_stock_message', __( 'This product is currently out of stock and unavailable.', 'bgh-theme' ) ) ); ?></p>
 	<?php elseif ($product->is_purchasable()): ?>
 		<div class="variations">
 
@@ -108,10 +108,21 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 					) );
 					?>
 				</div>
-				<?php echo end( $attribute_keys ) === $attribute_name ? wp_kses_post( apply_filters( 'woocommerce_reset_variations_link', '<a class="reset_variations" href="#">' . esc_html_x( 'Clear', 'Reset variations link', 'bgh-theme' ) . '</a>' ) ) : ''; ?>
+				<?php
+				/**
+				 * Filters the reset variation button.
+				 *
+				 * @since 2.5.0
+				 *
+				 * @param string  $button The reset variation button HTML.
+				 */
+				echo end( $attribute_keys ) === $attribute_name ? wp_kses_post( apply_filters( 'woocommerce_reset_variations_link', '<a class="reset_variations" href="#" aria-label="' . esc_attr__( 'Clear options', 'woocommerce' ) . '">' . esc_html_x( 'Clear', 'Reset variations link', 'bgh-theme' ) . '</a>' ) ) : '';
+				?>
 			</div>
 			<?php endforeach; ?>
 		</div>
+		<div class="reset_variations_alert screen-reader-text" role="alert" aria-live="polite" aria-relevant="all"></div>
+		<?php do_action( 'woocommerce_after_variations_table' ); ?>
 
 		<div class="single_variation_wrap">
 			<?php

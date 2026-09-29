@@ -2,21 +2,38 @@
 /**
  * Admin new order email
  *
- * @author WooThemes
- * @package WooCommerce/Templates/Emails/HTML
- * @version 3.7.0
+ * This template can be overridden by copying it to yourtheme/woocommerce/emails/admin-new-order.php.
+ *
+ * HOWEVER, on occasion WooCommerce will need to update template files and you
+ * (the theme developer) will need to copy the new files to your theme to
+ * maintain compatibility. We try to do this as little as possible, but it does
+ * happen. When this occurs the version of the template file will be bumped and
+ * the readme will list any important changes.
+ *
+ * @see https://woocommerce.com/document/template-structure/
+ * @package WooCommerce\Templates\Emails\HTML
+ * @version 10.4.0
  */
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
 
+use Automattic\WooCommerce\Utilities\FeaturesUtil;
+
+defined( 'ABSPATH' ) || exit;
+
+$email_improvements_enabled = FeaturesUtil::feature_is_enabled( 'email_improvements' );
+
+/*
+ * @hooked WC_Emails::email_header() Output the email header
+ */
 do_action( 'woocommerce_email_header', $email_heading, $email );
 
 $order_date = $order->get_date_created();
 ?>
-<p style="font-size: 11px;"><?php printf( __( 'Olet vastaanottanut tilauksen käyttäjältä %s. Tilauksen tiedot ovat tässä:', 'woocommerce' ), esc_html( $order->get_billing_first_name() . ' ' . $order->get_billing_last_name() ) ); ?></p>
 
-<?php do_action( 'woocommerce_email_before_order_table', $order, true, false ); ?>
+<?php echo $email_improvements_enabled ? '<div class="email-introduction">' : ''; ?>
+<p style="font-size: 11px;"><?php printf( __( 'Olet vastaanottanut tilauksen käyttäjältä %s. Tilauksen tiedot ovat tässä:', 'woocommerce' ), esc_html( $order->get_billing_first_name() . ' ' . $order->get_billing_last_name() ) ); ?></p>
+<?php echo $email_improvements_enabled ? '</div>' : ''; ?>
+
+<?php do_action( 'woocommerce_email_before_order_table', $order, true, false, $email ); ?>
 
 <h4><a href="<?php echo esc_url( $order->get_edit_order_url() ); ?>"><?php printf( __( 'Tilaus: %s', 'woocommerce' ), esc_html( $order->get_order_number() ) ); ?></a><?php if ( $order_date ) : ?> (<?php
 	$timestamp = $order_date->getTimestamp();
@@ -57,9 +74,14 @@ $order_date = $order->get_date_created();
 	</tfoot>
 </table>
 
-<?php do_action( 'woocommerce_email_after_order_table', $order, true, false ); ?>
+<?php do_action( 'woocommerce_email_after_order_table', $order, true, false, $email ); ?>
 
-<?php do_action( 'woocommerce_email_order_meta', $order, true, false ); ?>
+<?php
+/*
+ * @hooked WC_Emails::order_meta() Shows order meta data.
+ */
+do_action( 'woocommerce_email_order_meta', $order, true, false, $email );
+?>
 
 <h4><?php _e( 'Customer details', 'woocommerce' ); ?></h4>
 
@@ -79,6 +101,25 @@ if ( $billing_y_tunnus ) :
 	<p style="font-size: 11px;"><strong><?php _e( 'Kommentit:', 'woocommerce' ); ?></strong> <?php echo esc_html( $order->get_customer_note() ); ?></p>
 <?php endif; ?>
 
-<?php wc_get_template( 'emails/email-addresses.php', array( 'order' => $order ) ); ?>
+<?php
+wc_get_template(
+	'emails/email-addresses.php',
+	array(
+		'order'         => $order,
+		'sent_to_admin' => $sent_to_admin,
+	)
+);
 
-<?php do_action( 'woocommerce_email_footer' ); ?>
+/**
+ * Show user-defined additional content - this is set in each email's settings.
+ */
+if ( $additional_content ) {
+	echo $email_improvements_enabled ? '<table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation"><tr><td class="email-additional-content">' : '';
+	echo wp_kses_post( wpautop( wptexturize( $additional_content ) ) );
+	echo $email_improvements_enabled ? '</td></tr></table>' : '';
+}
+
+/*
+ * @hooked WC_Emails::email_footer() Output the email footer
+ */
+do_action( 'woocommerce_email_footer', $email );

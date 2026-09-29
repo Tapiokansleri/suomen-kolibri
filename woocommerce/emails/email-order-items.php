@@ -2,63 +2,234 @@
 /**
  * Email Order Items
  *
- * @package WooCommerce/Templates/Emails
- * @version 3.7.0
+ * This template can be overridden by copying it to yourtheme/woocommerce/emails/email-order-items.php.
+ *
+ * HOWEVER, on occasion WooCommerce will need to update template files and you
+ * (the theme developer) will need to copy the new files to your theme to
+ * maintain compatibility. We try to do this as little as possible, but it does
+ * happen. When this occurs the version of the template file will be bumped and
+ * the readme will list any important changes.
+ *
+ * @see     https://woocommerce.com/document/template-structure/
+ * @package WooCommerce\Templates\Emails
+ * @version 10.7.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+use Automattic\WooCommerce\Utilities\FeaturesUtil;
+
+defined( 'ABSPATH' ) || exit;
+
+$margin_side = is_rtl() ? 'left' : 'right';
+
+$email_improvements_enabled = FeaturesUtil::feature_is_enabled( 'email_improvements' );
+$price_text_align           = $email_improvements_enabled ? 'right' : 'left';
+$block_email_editor_enabled = FeaturesUtil::feature_is_enabled( 'block_email_editor' );
 
 foreach ( $items as $item_id => $item ) :
-	$product = apply_filters( 'woocommerce_order_item_product', $item->get_product(), $item );
+	$product       = $item->get_product();
+	$sku           = '';
+	$purchase_note = '';
+	$image         = '';
 
 	if ( ! apply_filters( 'woocommerce_order_item_visible', true, $item ) ) {
 		continue;
 	}
 
-	$purchase_note = ( is_object( $product ) && $product->exists() ) ? $product->get_purchase_note() : '';
+	if ( is_object( $product ) ) {
+		$sku           = $product->get_sku();
+		$purchase_note = $product->get_purchase_note();
+		$image         = $product->get_image( $image_size );
+	}
+
 	?>
 	<tr class="<?php echo esc_attr( apply_filters( 'woocommerce_order_item_class', 'order_item', $item, $order ) ); ?>">
-		<td class="td" style="text-align:left; vertical-align:middle; border: 1px solid #eee; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif; word-wrap:break-word;"><?php
+		<td class="td font-family text-align-left" style="vertical-align: <?php echo $block_email_editor_enabled ? 'top' : 'middle'; ?>; border: 1px solid #eee; word-wrap:break-word;">
+			<?php if ( $email_improvements_enabled ) { ?>
+				<table class="order-item-data" role="presentation">
+					<tr>
+						<?php
+						// Show title/image etc.
+						if ( $show_image ) {
+							/**
+							 * Email Order Item Thumbnail hook.
+							 *
+							 * @param string                $image The image HTML.
+							 * @param WC_Order_Item_Product $item  The item being displayed.
+							 * @since 2.1.0
+							 */
+							echo '<td style="vertical-align: top;">' . wp_kses_post( apply_filters( 'woocommerce_order_item_thumbnail', $image, $item ) ) . '</td>';
+						}
+						?>
+						<td>
+							<?php
+							/**
+							 * Order Item Name hook.
+							 *
+							 * @param string                $item_name The item name HTML.
+							 * @param WC_Order_Item_Product $item      The item being displayed.
+							 * @since 2.1.0
+							 */
+							$order_item_name = apply_filters( 'woocommerce_order_item_name', $item->get_name(), $item, false );
+							echo wp_kses_post( "<h3 style='font-size: inherit;font-weight: inherit;'>{$order_item_name}</h3>" );
 
-			if ( $show_image && is_object( $product ) && $product->exists() ) {
-				echo apply_filters( 'woocommerce_order_item_thumbnail', '<div style="margin-bottom: 5px"><img src="' . ( $product->get_image_id() ? current( wp_get_attachment_image_src( $product->get_image_id(), 'thumbnail' ) ) : wc_placeholder_img_src() ) . '" alt="' . esc_attr__( 'Product Image', 'woocommerce' ) . '" height="' . esc_attr( $image_size[1] ) . '" width="' . esc_attr( $image_size[0] ) . '" style="vertical-align:middle; margin-right: 10px;" /></div>', $item );
-			}
+							// SKU.
+							if ( $show_sku && $sku ) {
+								echo wp_kses_post( ' (#' . $sku . ')' );
+							}
 
-			echo apply_filters( 'woocommerce_order_item_name', $item->get_name(), $item, false );
+							/**
+							 * Allow other plugins to add additional product information.
+							 *
+							 * @param int                   $item_id    The item ID.
+							 * @param WC_Order_Item_Product $item       The item object.
+							 * @param WC_Order              $order      The order object.
+							 * @param bool                  $plain_text Whether the email is plain text or not.
+							 * @since 2.3.0
+							 */
+							do_action( 'woocommerce_order_item_meta_start', $item_id, $item, $order, $plain_text );
 
-			if ( $show_sku && is_object( $product ) && $product->get_sku() ) {
-				echo ' (#' . esc_html( $product->get_sku() ) . ')';
-			}
+							$item_meta = wc_display_item_meta(
+								$item,
+								array(
+									'before'       => '',
+									'after'        => '',
+									'separator'    => '<br>',
+									'echo'         => false,
+									'label_before' => '<span>',
+									'label_after'  => ':</span> ',
+								)
+							);
+							echo '<div class="email-order-item-meta">';
+							// Using wp_kses instead of wp_kses_post to remove all block elements.
+							echo wp_kses(
+								$item_meta,
+								array(
+									'br'   => array(),
+									'span' => array(),
+									'a'    => array(
+										'href'   => true,
+										'target' => true,
+										'rel'    => true,
+										'title'  => true,
+									),
+								)
+							);
+							echo '</div>';
 
-			do_action( 'woocommerce_order_item_meta_start', $item_id, $item, $order );
+							if ( $show_download_links && $order->is_download_permitted() ) {
+								$downloads = $item->get_item_downloads();
+								if ( ! empty( $downloads ) ) {
+									echo '<br/><small>';
+									foreach ( $downloads as $download ) {
+										echo '<a href="' . esc_url( $download['download_url'] ) . '">' . esc_html( $download['name'] ) . '</a><br/>';
+									}
+									echo '</small>';
+								}
+							}
 
-			wc_display_item_meta(
-				$item,
-				array(
-					'before'    => '<br/><small>',
-					'after'     => '</small>',
-					'separator' => '<br/>',
-				)
-			);
+							/**
+							 * Allow other plugins to add additional product information.
+							 *
+							 * @param int                   $item_id    The item ID.
+							 * @param WC_Order_Item_Product $item       The item object.
+							 * @param WC_Order              $order      The order object.
+							 * @param bool                  $plain_text Whether the email is plain text or not.
+							 * @since 2.3.0
+							 */
+							do_action( 'woocommerce_order_item_meta_end', $item_id, $item, $order, $plain_text );
 
-			if ( $show_download_links && $order->is_download_permitted() ) {
-				$downloads = $item->get_item_downloads();
-				if ( ! empty( $downloads ) ) {
-					echo '<br/><small>';
-					foreach ( $downloads as $download ) {
-						echo '<a href="' . esc_url( $download['download_url'] ) . '">' . esc_html( $download['name'] ) . '</a><br/>';
-					}
-					echo '</small>';
+							?>
+						</td>
+					</tr>
+				</table>
+				<?php
+			} else {
+
+				// Show title/image etc.
+				if ( $show_image ) {
+					/**
+					 * Email Order Item Thumbnail hook.
+					 *
+					 * @param string                $image The image HTML.
+					 * @param WC_Order_Item_Product $item  The item being displayed.
+					 * @since 2.1.0
+					 */
+					echo wp_kses_post( apply_filters( 'woocommerce_order_item_thumbnail', $image, $item ) );
 				}
+
+				/**
+				 * Order Item Name hook.
+				 *
+				 * @param string                $item_name The item name HTML.
+				 * @param WC_Order_Item_Product $item      The item being displayed.
+				 * @since 2.1.0
+				 */
+				echo wp_kses_post( apply_filters( 'woocommerce_order_item_name', $item->get_name(), $item, false ) );
+
+				// SKU.
+				if ( $show_sku && $sku ) {
+					echo wp_kses_post( ' (#' . $sku . ')' );
+				}
+
+				/**
+				 * Allow other plugins to add additional product information.
+				 *
+				 * @param int                   $item_id    The item ID.
+				 * @param WC_Order_Item_Product $item       The item object.
+				 * @param WC_Order              $order      The order object.
+				 * @param bool                  $plain_text Whether the email is plain text or not.
+				 * @since 2.3.0
+				 */
+				do_action( 'woocommerce_order_item_meta_start', $item_id, $item, $order, $plain_text );
+
+				wc_display_item_meta(
+					$item,
+					array(
+						'before'    => '<br/><small>',
+						'after'     => '</small>',
+						'separator' => '<br/>',
+					)
+				);
+
+				if ( $show_download_links && $order->is_download_permitted() ) {
+					$downloads = $item->get_item_downloads();
+					if ( ! empty( $downloads ) ) {
+						echo '<br/><small>';
+						foreach ( $downloads as $download ) {
+							echo '<a href="' . esc_url( $download['download_url'] ) . '">' . esc_html( $download['name'] ) . '</a><br/>';
+						}
+						echo '</small>';
+					}
+				}
+
+				/**
+				 * Allow other plugins to add additional product information.
+				 *
+				 * @param int                   $item_id    The item ID.
+				 * @param WC_Order_Item_Product $item       The item object.
+				 * @param WC_Order              $order      The order object.
+				 * @param bool                  $plain_text Whether the email is plain text or not.
+				 * @since 2.3.0
+				 */
+				do_action( 'woocommerce_order_item_meta_end', $item_id, $item, $order, $plain_text );
 			}
+			?>
+		</td>
+		<td class="td font-family text-align-<?php echo esc_attr( $price_text_align ); ?>" style="vertical-align:middle; border: 1px solid #eee;">
+			<?php
+			echo $email_improvements_enabled ? '&times;' : '';
+			$qty          = $item->get_quantity();
+			$refunded_qty = $order->get_qty_refunded_for_item( $item_id );
 
-			do_action( 'woocommerce_order_item_meta_end', $item_id, $item, $order );
-
-			?></td>
-		<td class="td" style="text-align:left; vertical-align:middle; border: 1px solid #eee; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;"><?php echo esc_html( apply_filters( 'woocommerce_email_order_item_quantity', $item->get_quantity(), $item ) ); ?></td>
-		<td class="td" style="text-align:left; vertical-align:middle; border: 1px solid #eee; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;">
+			if ( $refunded_qty ) {
+				$qty_display = '<del>' . esc_html( $qty ) . '</del> <ins>' . esc_html( $qty - ( $refunded_qty * -1 ) ) . '</ins>';
+			} else {
+				$qty_display = esc_html( $qty );
+			}
+			echo wp_kses_post( apply_filters( 'woocommerce_email_order_item_quantity', $qty_display, $item ) );
+			?>
+		</td>
+		<td class="td font-family text-align-<?php echo esc_attr( $price_text_align ); ?>" style="vertical-align:middle; border: 1px solid #eee;">
 			<?php
 			$qty = (float) $item->get_quantity();
 			if ( $qty > 0 ) {
@@ -67,15 +238,23 @@ foreach ( $items as $item_id => $item ) :
 			}
 			?>
 		</td>
-		<td class="td" style="text-align:left; vertical-align:middle; border: 1px solid #eee; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;"><?php echo wp_kses_post( $order->get_formatted_line_subtotal( $item ) ); ?></td>
+		<td class="td font-family text-align-<?php echo esc_attr( $price_text_align ); ?>" style="vertical-align:middle; border: 1px solid #eee;">
+			<?php echo wp_kses_post( $order->get_formatted_line_subtotal( $item ) ); ?>
+		</td>
 	</tr>
 	<?php
 
-	if ( $show_purchase_note && $purchase_note ) :
+	if ( $show_purchase_note && $purchase_note ) {
 		?>
 		<tr>
-			<td colspan="3" style="text-align:left; vertical-align:middle; border: 1px solid #eee; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;"><?php echo wpautop( do_shortcode( wp_kses_post( $purchase_note ) ) ); ?></td>
+			<td colspan="3" class="font-family text-align-left" style="vertical-align:middle; border: 1px solid #eee;">
+				<?php
+				echo wp_kses_post( wpautop( do_shortcode( $purchase_note ) ) );
+				?>
+			</td>
 		</tr>
-	<?php endif; ?>
+		<?php
+	}
+	?>
 
 <?php endforeach; ?>

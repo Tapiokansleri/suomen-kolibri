@@ -16,7 +16,22 @@ Pushes that don't change the version aren't released.
 
 ## WooCommerce templates
 
-All WooCommerce template overrides live in `woocommerce/` of this theme, including the ones inherited from the parent theme (the parent's copies were outdated, so current versions are kept here). They match WooCommerce 10.7. When WooCommerce reports outdated templates under **WooCommerce → Status → Templates**, update the listed files here: start from the new WooCommerce template and re-apply the theme's changes.
+All WooCommerce template overrides live in `woocommerce/` of this theme, including the ones inherited from the parent theme (the parent's copies were outdated, so current versions are kept here). They match WooCommerce 11.1. When WooCommerce reports outdated templates under **WooCommerce → Status → Templates**, update the listed files here: start from the new WooCommerce template and re-apply the theme's changes.
+
+## Search engine features (`inc/audit/`)
+
+Added after the SEO audit of September 2026. None of them changes how the site looks.
+
+| File | What it does |
+|---|---|
+| `index-control.php` | Product tag pages and the attribute pages (size, taste, model, colour) and blog tags are `noindex, follow` and leave the sitemap. About 40 pages that bring visitors stay indexed (list in the file). |
+| `one-h1.php` | Exactly one H1 per page: the first H2 becomes the H1 on pages without one, extra H1 become H2 with the class `h1`, so the look is the same. Front page slider captions are plain text (`template-parts/sections/slider.php`). |
+| `schema.php` | More complete structured data: product brand, full image addresses, item condition, clean description; company address, phone, e-mail, business ID and the shop with opening hours on the Yhteystiedot page. |
+| `product-removed.php` | A product in the trash (or deleted) shows "Tuote poistunut valikoimasta" with a link to its category and answers `410 Gone` instead of "Sivua ei löytynyt". A redirect made in the Redirection plugin wins. |
+| `images.php` | ALT texts for the logo, footer badges and sliders, lazy loading for images far down the page. |
+| `content-links.php` | Removes `preview` parameters from links in content and removes links to products that no longer exist (the text stays). |
+
+The titles, descriptions and redirects of the audit are settings in the database, not theme code, and were applied with separate scripts.
 
 ## CSS
 

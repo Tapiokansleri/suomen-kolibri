@@ -45,9 +45,9 @@ $class = get_sub_field('slide_class'); ?>
                         $link = get_sub_field('slide_cta');
                         $link2 = get_sub_field('slide_cta_2');
                         ?>
-                        <img class="w-100<?php if ($imageMobile) { echo ' d-none d-md-block'; } ?>" src="<?php echo $img['url']; ?>" alt="<?php echo $img['alt']; ?>">
+                        <img class="w-100<?php if ($imageMobile) { echo ' d-none d-md-block'; } ?>" src="<?php echo $img['url']; ?>" alt="<?php echo esc_attr( ! empty( $img['alt'] ) ? $img['alt'] : wp_strip_all_tags( (string) $text_1 ) ); ?>">
                         <?php if ($imageMobile): ?>
-                            <img src="<?php echo $imageMobile['url']; ?>" alt="<?php echo $imageMobile['alt']; ?>" class="d-block d-md-none" />
+                            <img src="<?php echo $imageMobile['url']; ?>" alt="<?php echo esc_attr( ! empty( $imageMobile['alt'] ) ? $imageMobile['alt'] : wp_strip_all_tags( (string) $text_1 ) ); ?>" class="d-block d-md-none" />
                         <?php endif; ?>
                         <?php if ($layer) {
                             echo '<div class="layer '.$layer_color.'"></div>';

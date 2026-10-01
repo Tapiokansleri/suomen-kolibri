@@ -14,7 +14,7 @@ include_once get_stylesheet_directory() . '/inc/migrate-theme-mods.php';
 include_once get_stylesheet_directory() . '/inc/theme-settings.php';
 
 // SEO AUDIT FIXES (September 2026): what Google sees, one H1, schema, removed products, images
-foreach ( array( 'index-control', 'one-h1', 'schema', 'product-removed' ) as $suomen_kolibri_audit_file ) {
+foreach ( array( 'index-control', 'one-h1', 'schema', 'product-removed', 'images' ) as $suomen_kolibri_audit_file ) {
     include_once get_stylesheet_directory() . '/inc/audit/' . $suomen_kolibri_audit_file . '.php';
 }
 unset( $suomen_kolibri_audit_file );

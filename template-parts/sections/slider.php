@@ -57,7 +57,7 @@ $class = get_sub_field('slide_class'); ?>
                             <?php if($text_box): ?>
                                 <div class="content <?php echo $text_box_color; ?>">
                             <?php endif;
-                            if ($text_1) { echo '<h1>'.$text_1.'</h1>'; }
+                            if ($text_1) { echo '<p class="h1">'.$text_1.'</p>'; } // slide captions are not page headings (one H1 per page, see inc/audit/one-h1.php)
                             if ($text_2) { echo '<h3>'.$text_2.'</h3>'; }
                             if ($text_3) { echo '<h3>'.$text_3.'</h3>'; }?>
                             <div class="slider-button-wrapper">

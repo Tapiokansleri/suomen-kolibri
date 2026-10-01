@@ -13,6 +13,12 @@ include_once get_stylesheet_directory() . '/inc/migrate-theme-mods.php';
 // SETTINGS KEPT OUT OF THE REPOSITORY (Settings → General)
 include_once get_stylesheet_directory() . '/inc/theme-settings.php';
 
+// SEO AUDIT FIXES (September 2026): what Google sees, one H1, schema, removed products, images
+foreach ( array( 'index-control', 'one-h1' ) as $suomen_kolibri_audit_file ) {
+    include_once get_stylesheet_directory() . '/inc/audit/' . $suomen_kolibri_audit_file . '.php';
+}
+unset( $suomen_kolibri_audit_file );
+
 // LOAD PARENT THEME STYLES
 add_action( 'wp_enqueue_scripts', 'parent_theme_styles' );
 function parent_theme_styles() {

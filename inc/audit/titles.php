@@ -124,6 +124,10 @@ function suomen_kolibri_title_reason( $var = '', $args = null ) {
 	}
 	$brand = html_entity_decode( get_bloginfo( 'name' ), ENT_QUOTES, 'UTF-8' );
 	$name  = suomen_kolibri_product_title_name( $post_id );
+	// A name such as "Käärekarkit omalla logolla" already says it, so the reason is another one.
+	if ( preg_match( '/omalla|logolla|logopainatuksella|painatuksella|toteutuksella|etiketillä|vyötteellä|kuosilla/iu', $name ) ) {
+		return 'Pyydä tarjous';
+	}
 	// name + " | " + reason + " | " + site name
 	return ( mb_strlen( $name ) + mb_strlen( 'Omalla logolla' ) + mb_strlen( $brand ) + 6 <= 68 ) ? 'Omalla logolla' : 'Oma logo';
 }

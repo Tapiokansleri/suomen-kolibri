@@ -30,6 +30,7 @@ Added after the SEO audit of September 2026. None of them changes how the site l
 | `product-removed.php` | A product in the trash (or deleted) shows "Tuote poistunut valikoimasta" with a link to its category and answers `410 Gone` instead of "Sivua ei löytynyt". A redirect made in the Redirection plugin wins. |
 | `images.php` | ALT texts for the logo, footer badges and sliders, lazy loading for images far down the page. |
 | `content-links.php` | Removes `preview` parameters from links in content and removes links to products that no longer exist (the text stays). |
+| `titles.php` | Search result titles of products, "Brand Product name \| Omalla logolla \| Suomen Kolibri". It makes the Yoast variables `%%sk_product%%` (name, with the brand in front when the name does not tell it) and `%%sk_reason%%`; the Yoast title template of products uses them. A title typed in a product's own Yoast field wins. |
 
 The titles, descriptions and redirects of the audit are settings in the database, not theme code, and were applied with separate scripts.
 

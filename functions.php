@@ -53,6 +53,9 @@ include_once get_stylesheet_directory() . '/inc/marketing/datalayer-fix.php';
 // Default WP_Query cache vars for Relevanssi / parse_query-only loops.
 include_once get_stylesheet_directory() . '/inc/compat/wp-query-cache-vars.php';
 
+// The cart is loaded for every rendered page (bot addresses with "/wp-json/" in them crashed the 404 page).
+include_once get_stylesheet_directory() . '/inc/compat/cart-on-404.php';
+
 // PRODUCT ARCHIVE CUSTOMIZATIONS
 include_once get_stylesheet_directory() . '/inc/woocommerce/archive-product.php';
 

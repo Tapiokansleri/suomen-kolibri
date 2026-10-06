@@ -4,9 +4,10 @@
  *
  * When a product is moved to the trash (or deleted), its address no longer finds a product. The visitor sees the
  * theme's normal 404 page with a clear message about the product, a link to the product's category when it is
- * known (trashed products), and the same product suggestions as on the 404 page. Google gets the status
- * "410 Gone" (the page was removed on purpose) and noindex. A redirect set in the Redirection plugin for the
- * address still wins, because it runs first.
+ * known (trashed products), and the same product suggestions as on the 404 page. Google gets the status 404 and
+ * noindex. (410 Gone would say "removed on purpose", but the Seravo server replaces every 410 answer with its own
+ * generic error page, so visitors would not see this page; Google treats 404 and 410 almost the same.) A redirect set
+ * in the Redirection plugin for the address still wins, because it runs first.
  *
  * @package Suomen_Kolibri
  */
@@ -52,12 +53,11 @@ function suomen_kolibri_removed_product_category() {
 	return $terms[0];
 }
 
-// Status 410 instead of 404 (WordPress has already set 404 when the template starts).
+// The page is not cached, so that the message changes at once if the product comes back.
 add_action(
 	'template_redirect',
 	static function () {
 		if ( suomen_kolibri_is_removed_product_request() ) {
-			status_header( 410 );
 			nocache_headers();
 		}
 	},

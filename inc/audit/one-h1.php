@@ -97,6 +97,11 @@ add_action(
 		if ( is_admin() || wp_doing_ajax() || wp_doing_cron() || is_feed() || is_robots() || is_embed() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
 			return;
 		}
+		// The shop's own pages (cart, checkout, account, WooCommerce AJAX) are left exactly as they are: they are not in
+		// Google, and nothing on them should depend on this filter.
+		if ( isset( $_GET['wc-ajax'] ) || ( function_exists( 'is_cart' ) && ( is_cart() || is_checkout() || is_account_page() ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			return;
+		}
 		ob_start( 'suomen_kolibri_single_h1' );
 	},
 	0

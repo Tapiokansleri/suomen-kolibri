@@ -16,7 +16,7 @@ Pushes that don't change the version aren't released.
 
 ## WooCommerce templates
 
-All WooCommerce template overrides live in `woocommerce/` of this theme, including the ones inherited from the parent theme (the parent's copies were outdated, so current versions are kept here). They match WooCommerce 11.1. When WooCommerce reports outdated templates under **WooCommerce → Status → Templates**, update the listed files here: start from the new WooCommerce template and re-apply the theme's changes.
+All WooCommerce template overrides live in `woocommerce/` of this theme, including the ones inherited from the parent theme (the parent's copies were outdated, so current versions are kept here). They match WooCommerce 10.7 (the update to 11.1 comes in a separate release). When WooCommerce reports outdated templates under **WooCommerce → Status → Templates**, update the listed files here: start from the new WooCommerce template and re-apply the theme's changes.
 
 ## Search engine features (`inc/audit/`)
 
